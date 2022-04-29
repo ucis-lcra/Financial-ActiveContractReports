@@ -1,4 +1,5 @@
 from connect_to_db import db_connect
+from datetime import datetime
 import csv
 # What we need
 
@@ -7,12 +8,7 @@ def create_fieldnames():
     fieldnames = ['OrgGroupCodeDesc', 'ContractNumber1', 'CentralNameLname1', 'CentralNameFname',
               'ContractTitle1', 'CurrentContractStartDate', 'CurrentContractEndDate', 'CurrentContractAmount']
     return fieldnames
-
-# Create and open CSV File and Writer
-def create_csv_file():
-    report_csv = open('report.csv', 'w', newline='')
-    report_writer = csv.DictWriter(report_csv, fieldnames=create_fieldnames)
-    report_writer.writeheader()
+   
 
 
 # Connect to the Database
@@ -33,22 +29,6 @@ structures_col = [column[0] for column in db_conn_cursor.description]
 db_conn_cursor.execute("SELECT * FROM dbo.Contract")
 contracts = db_conn_cursor.fetchall()
 contracts_col = [column[0] for column in db_conn_cursor.description]
-
-# Get all from Vendor Contracts
-db_conn_cursor.execute('SELECT * FROM dbo.VendorContract')
-vendor_contracts = db_conn_cursor.fetchall()
-vendor_contracts_col = [column[0] for column in db_conn_cursor.description]
-
-# Get all from Vendor
-db_conn_cursor.execute("SELECT * FROM dbo.Vendor")
-vendors = db_conn_cursor.fetchall()
-vendors_col = [column[0] for column in db_conn_cursor.description]
-
-# Get All From Central Name
-db_conn_cursor.execute("SELECT * FROM dbo.CentralName")
-central_names = db_conn_cursor.fetchall()
-central_names_col = [column[0] for column in db_conn_cursor.description]
-
 
 # Get Level One and Two Information Functions
 def get_level_two_information(structure):
@@ -71,6 +51,15 @@ def get_level_one_information(structure):
 
 # Get All Contracts
 def get_all_contracts_to_csv():
+    
+    # Create TimeStamp
+    time = datetime.now()
+    time_stamp = time.strftime("%Y-%m-%d %H-%M")
+    # Create CSV File
+    report_csv = open('report - '+time_stamp+'.csv', 'w', newline='')
+    report_writer = csv.DictWriter(report_csv, fieldnames=create_fieldnames())
+    report_writer.writeheader()
+
     for contract in contracts:
         for structure in structures:
             # Get level 2 variables
@@ -85,13 +74,35 @@ def get_all_contracts_to_csv():
                 concat_name = str(one_code) + '-' + \
                     str(one_code_desc) + ' ' + one_code_desc
             if contract[7] == structure[0]:
+                # Now we need to get the first and last name from CentralName Table
+                name_key = int(contract[18])
+                db_conn_cursor.execute("(SELECT CentralNameID FROM dbo.Vendor WHERE VendorID = " + name_key + ")")
+                vendors = db_conn_cursor.fetchall()
+                for row in vendors:
+                    last_name = str(row[0])
+                    first_name = str(row[1])
                 report_writer.writerow({
                     'OrgGroupCodeDesc': concat_name,
                     'ContractNumber1': contract[2],
-                    'CentralNameLname1': 'Central Name',
-                    'CentralNameFname': 'Central Name 2',
+                    'CentralNameLname1': last_name,
+                    'CentralNameFname': first_name,
                     'ContractTitle1': contract[3],
                     'CurrentContractStartDate': contract[13],
                     'CurrentContractEndDate': contract[14],
                     'CurrentContractAmount': contract[15]
                 })
+    report_csv.close()
+
+get_all_contracts_to_csv()
+# dboVendorContact
+
+# dboVendor
+
+# dboCentralName
+# [1]
+# # [2]
+# SELECT dbo.CentralName.LastName, dbo.CentralName.FirstName
+# FROM dbo.CentralName 
+# WHERE dbo.CentralName.CentralNameID = (SELECT dbo.Vendor.CentralNameID FROM
+# 	dbo.Vendor
+# 	WHERE dbo.Vendor.VendorID = '1572')
