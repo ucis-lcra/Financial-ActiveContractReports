@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,18 +8,21 @@
     <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
     <title>Active Contract Reports</title>
 </head>
+
 <body>
     <div class="container">
         <h1 class="title">Active Contract Report Download</h1>
-            {% for data in datas %}
-            <h2>{{titles[loop.index]}}</h2>
-            {{data|safe}}
-            {% endfor %}
-            <p>File successfully created</p>
-            <a href="{{ file }}" target="_blank" class="form-submit">Download</a>
+        {% for data in datas %}
+        {{data|safe}}
+        {% endfor %}
+        <a href="{{ file }}" target="_blank" class="form-submit">Download</a>
         </form>
-        
+
     </div>
-</script>
+
+    <script>
+    
+    </script>
 </body>
+
 </html>
