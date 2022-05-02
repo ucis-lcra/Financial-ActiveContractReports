@@ -100,6 +100,5 @@ def get_all_contracts_to_csv(start_date, end_date):
                     'CurrentContractEndDate': end_date,
                     'CurrentContractAmount': contract_amount
                 })
-    report_csv.close()
     return report_path
 

@@ -11,7 +11,10 @@
 <body>
     <div class="container">
         <h1 class="title">Active Contract Report Download</h1>
-            
+            {% for data in datas %}
+            <h2>{{titles[loop.index]}}</h2>
+            {{data|safe}}
+            {% endfor %}
             <p>File successfully created</p>
             <a href="{{ file }}" target="_blank" class="form-submit">Download</a>
         </form>
