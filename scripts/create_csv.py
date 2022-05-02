@@ -46,7 +46,7 @@ def get_level_one_information(structure):
 def get_all_contracts_to_csv(start_date, end_date):
 
     # Search through the Database with the given dates and get all the contracts within the required times
-    db_conn_cursor.execute("SELECT * FROM dbo.Contract WHERE CurrentContractStartDate >= '" + start_date + "' AND CurrentContractEndDate <= '" + end_date + "'")
+    db_conn_cursor.execute("SELECT * FROM dbo.Contract WHERE ProcessStatus = '2' AND CurrentContractStartDate <= '" + start_date + "' AND CurrentContractEndDate > '" + end_date + "'")
     contracts = db_conn_cursor.fetchall()
 
     # Create TimeStamp
