@@ -4,11 +4,12 @@ import csv
 # What we need
 
 # Create fieldnames for CSV file
+
+
 def create_fieldnames():
     fieldnames = ['OrgGroupCodeDesc', 'ContractNumber1', 'CentralNameLname1', 'CentralNameFname',
-              'ContractTitle1', 'CurrentContractStartDate', 'CurrentContractEndDate', 'CurrentContractAmount']
+                  'ContractTitle1', 'CurrentContractStartDate', 'CurrentContractEndDate', 'CurrentContractAmount']
     return fieldnames
-   
 
 
 # Connect to the Database
@@ -29,6 +30,7 @@ structures_col = [column[0] for column in db_conn_cursor.description]
 db_conn_cursor.execute("SELECT * FROM dbo.Contract")
 contracts = db_conn_cursor.fetchall()
 contracts_col = [column[0] for column in db_conn_cursor.description]
+
 
 # Get Level One and Two Information Functions
 def get_level_two_information(structure):
@@ -51,7 +53,7 @@ def get_level_one_information(structure):
 
 # Get All Contracts
 def get_all_contracts_to_csv():
-    
+
     # Create TimeStamp
     time = datetime.now()
     time_stamp = time.strftime("%Y-%m-%d %H-%M")
@@ -64,34 +66,41 @@ def get_all_contracts_to_csv():
         for structure in structures:
             # Get level 2 variables
             if structure[2] is not None:
-                two_id, two_code, two_code_desc = get_level_two_information(structure)
-            # Get level 1 variables
-            one_id, one_code, one_code_desc = get_level_one_information(structure)
-            try:
+                two_id, two_code, two_code_desc = get_level_two_information(
+                    structure)
+                one_id, one_code, one_code_desc = get_level_one_information(
+                structure)
                 concat_name = str(one_code) + '-' + str(two_code) + \
                     ' ' + one_code_desc + ',' + two_code_desc
-            except:
-                concat_name = str(one_code) + '-' + \
-                    str(one_code_desc) + ' ' + one_code_desc
+            # Get level 1 variables
+            else:
+                one_id, one_code, one_code_desc = get_level_one_information(structure)
+                concat_name = str(one_code) + '-' + str(one_code_desc)
             if contract[7] == structure[0]:
                 # Now we need to get the first and last name from CentralName Table
                 name_key = int(contract[18])
-                db_conn_cursor.execute("(SELECT CentralNameID FROM dbo.Vendor WHERE VendorID = " + name_key + ")")
+                db_conn_cursor.execute(
+                    "(SELECT dbo.CentralName.LastName, dbo.CentralName.FirstName FROM dbo.CentralName WHERE dbo.CentralName.CentralNameID = (SELECT dbo.Vendor.CentralNameID FROM dbo.Vendor WHERE dbo.Vendor.VendorID = '" + str(name_key) + "'))")
                 vendors = db_conn_cursor.fetchall()
                 for row in vendors:
                     last_name = str(row[0])
                     first_name = str(row[1])
+                
+                # Formate Date Correctly
+                start_date = contract[13].strftime('%m/%d/%Y')
+                end_date = contract[14].strftime('%m/%d/%Y')
                 report_writer.writerow({
                     'OrgGroupCodeDesc': concat_name,
                     'ContractNumber1': contract[2],
                     'CentralNameLname1': last_name,
                     'CentralNameFname': first_name,
                     'ContractTitle1': contract[3],
-                    'CurrentContractStartDate': contract[13],
-                    'CurrentContractEndDate': contract[14],
+                    'CurrentContractStartDate': start_date,
+                    'CurrentContractEndDate': end_date,
                     'CurrentContractAmount': contract[15]
                 })
     report_csv.close()
+
 
 get_all_contracts_to_csv()
 # dboVendorContact
@@ -102,7 +111,7 @@ get_all_contracts_to_csv()
 # [1]
 # # [2]
 # SELECT dbo.CentralName.LastName, dbo.CentralName.FirstName
-# FROM dbo.CentralName 
+# FROM dbo.CentralName
 # WHERE dbo.CentralName.CentralNameID = (SELECT dbo.Vendor.CentralNameID FROM
 # 	dbo.Vendor
 # 	WHERE dbo.Vendor.VendorID = '1572')
