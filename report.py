@@ -1,6 +1,6 @@
 from connect_to_db import db_connect
 from datetime import datetime
-import csv
+import csv, numpy
 # What we need
 
 # Create fieldnames for CSV file
@@ -26,12 +26,6 @@ db_conn_cursor.execute("SELECT * FROM dbo.OrgStructure")
 structures = db_conn_cursor.fetchall()
 structures_col = [column[0] for column in db_conn_cursor.description]
 
-# Get all from Contracts
-db_conn_cursor.execute("SELECT * FROM dbo.Contract")
-contracts = db_conn_cursor.fetchall()
-contracts_col = [column[0] for column in db_conn_cursor.description]
-
-
 # Get Level One and Two Information Functions
 def get_level_two_information(structure):
     for group in groups:
@@ -52,11 +46,16 @@ def get_level_one_information(structure):
 
 
 # Get All Contracts
-def get_all_contracts_to_csv():
+def get_all_contracts_to_csv(start_date, end_date):
+
+    # Search through the Database with the given dates and get all the contracts within the required times
+    db_conn_cursor.execute("SELECT * FROM dbo.Contract WHERE CurrentContractStartDate >= '" + start_date + "' AND CurrentContractEndDate <= '" + end_date + "'")
+    contracts = db_conn_cursor.fetchall()
 
     # Create TimeStamp
     time = datetime.now()
     time_stamp = time.strftime("%Y-%m-%d %H-%M")
+
     # Create CSV File
     report_csv = open('report - '+time_stamp+'.csv', 'w', newline='')
     report_writer = csv.DictWriter(report_csv, fieldnames=create_fieldnames())
@@ -85,10 +84,14 @@ def get_all_contracts_to_csv():
                 for row in vendors:
                     last_name = str(row[0])
                     first_name = str(row[1])
-                
+                    if first_name != 'None':
+                        first_name = str(row[1])
+                    else:
+                        first_name = ''
                 # Formate Date Correctly
                 start_date = contract[13].strftime('%m/%d/%Y')
                 end_date = contract[14].strftime('%m/%d/%Y')
+                contract_amount = '$' + str(contract[15])
                 report_writer.writerow({
                     'OrgGroupCodeDesc': concat_name,
                     'ContractNumber1': contract[2],
@@ -97,12 +100,14 @@ def get_all_contracts_to_csv():
                     'ContractTitle1': contract[3],
                     'CurrentContractStartDate': start_date,
                     'CurrentContractEndDate': end_date,
-                    'CurrentContractAmount': contract[15]
+                    'CurrentContractAmount': contract_amount
                 })
     report_csv.close()
 
 
-get_all_contracts_to_csv()
+
+
+get_all_contracts_to_csv('2021-01-01 00:00:00.000', '2022-12-31 00:00:00.000')
 # dboVendorContact
 
 # dboVendor
