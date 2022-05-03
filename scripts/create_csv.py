@@ -82,10 +82,11 @@ def get_all_contracts_to_csv(start_date, end_date):
                 for row in vendors:
                     last_name = str(row[0])
                     first_name = str(row[1])
-                    if first_name != 'None':
-                        first_name = str(row[1])
+                    if first_name == 'None':
+                        first_name = ' '
                     else:
-                        first_name = ''
+                        first_name = str(row[1])
+                        
                 # Formate Date Correctly
                 start_date = contract[13].strftime('%m/%d/%Y')
                 end_date = contract[14].strftime('%m/%d/%Y')
