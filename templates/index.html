@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+    <title>Active Contract Reports</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Active Contract Report</h1>
+        <form class="dates-form" method="POST">
+
+            <label class="form-lbl"for="start">Contract Expiration Date:</label>
+            <input class="form-dt" type="date" id="end" name="contract-end">
+
+            <label class="form-lbl"for="start">Contract Start Date:</label>
+            <input class="form-dt" type="date" id="start" name="contract-start" value="">
+        
+            <input class="form-submit" type="submit" value="Submit">
+            
+        </form>
+        
+    </div>
+
+</body>
+</html>
