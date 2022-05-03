@@ -22,10 +22,11 @@ def hello():
         file = get_all_contracts_to_csv(start_date_formatted, end_date_formatted)
         df = pd.read_csv(file)
         df.to_csv(file, index=None)
-        
         file = str(file)
-
+        # Return the download page, feeding in the created CSV file to display/download
         return render_template("download.html", file=file, datas = [df.to_html()], titles=[''])
+        
+        # If we aren't sending a POST or GET request, return the home page
     else:
         return render_template("index.html")
 

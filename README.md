@@ -18,6 +18,11 @@ From within the project directory run the following command
 In this case, we would have ran 
 
     python3 -m venv active_contracts
+### **Enter the Virtual Environment**
+
+From the command line within the top level of the repository, you can use the following command to enter the Virtual Environment.
+
+    active_contracts\Scripts\activate.bat
 ### **Install Needed Dependencies**
 Within the main project directory, we can install the requirements with the following command
 
@@ -29,6 +34,9 @@ Allows the project to run in development mode.
 
     py app.py 
 
+Once the project is up and running it can be accessed via the following link
+
+    http://localhost:5000/
 # Tech Stack
 This project is built with the following tech stack:
 * HTML
@@ -52,16 +60,11 @@ This project is built with the following tech stack:
 * SQL
 
 
-# Coming Soon
 # Links
 
-- [Repo](https://github.com/ucis-jare/ "<project-name> Repo")
+- [Repo](https://github.com/ucis-jare/Financial-ActiveContractReports "<project-name> Repo")
 
 - [Live](<Homepage url> "Live View")
-
-- [Bugs](https://github.com/Rohit19060/<project-name>/issues "Issues Page")
-
-- [API](<API Link> "API")
 
 ## Directory Overview
 * Main Directory        
@@ -83,3 +86,11 @@ This project is built with the following tech stack:
 
 # Screenshots
 
+### Main Menu
+![Main Menu](/static/imgs/mainpage.png "Main Menu")
+
+### Download Page
+![Download Page](/static/imgs/downloadpage.png "Download Page")
+
+### Downloading File
+![Downloading File](/static/imgs/downloadfile.png "Downloading File")
