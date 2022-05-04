@@ -64,7 +64,6 @@ This project is built with the following tech stack:
 
 - [Repo](https://github.com/ucis-jare/Financial-ActiveContractReports "<project-name> Repo")
 
-- [Live](<Homepage url> "Live View")
 
 ## Directory Overview
 * Main Directory        
