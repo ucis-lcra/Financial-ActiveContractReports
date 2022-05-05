@@ -1,10 +1,11 @@
 from datetime import datetime
 import csv
+import pandas as pd
 
 from scripts.connect_to_db import db_connect
 
 def create_fieldnames():
-    fieldnames = ['OrgGroupCodeDesc', 'ContractNumber1', 'CentralNameLname1', 'CentralNameFname',
+    fieldnames = ['OrgGroupCode', 'OrgGroupCodeDesc', 'ContractNumber1', 'CentralNameLname1', 'CentralNameFname',
                   'ContractTitle1', 'CurrentContractStartDate', 'CurrentContractEndDate', 'CurrentContractAmount']
     return fieldnames
 
@@ -92,6 +93,7 @@ def get_all_contracts_to_csv(start_date, end_date):
                 end_date = contract[14].strftime('%m/%d/%Y')
                 contract_amount = '$' + str(contract[15])
                 report_writer.writerow({
+                    'OrgGroupCode': one_code_desc,
                     'OrgGroupCodeDesc': concat_name,
                     'ContractNumber1': contract[2],
                     'CentralNameLname1': last_name,
@@ -101,5 +103,10 @@ def get_all_contracts_to_csv(start_date, end_date):
                     'CurrentContractEndDate': end_date,
                     'CurrentContractAmount': contract_amount
                 })
+
+    csv_sort = pd.read_csv(report_path)
+    csv_sort.sort_values(by=['OrgGroupCode','OrgGroupCodeDesc','ContractNumber1'], inplace=True)
+    csv_sort.to_csv(report_path, index=False)
+
     return report_path
 
