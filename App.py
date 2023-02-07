@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import pandas as pd
+import pandas as pd 
 # Import Scripts
 from scripts.create_csv import get_all_contracts_to_csv as get_all_contracts_to_csv
 from scripts.connect_to_db import db_connect as db_connect

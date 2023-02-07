@@ -104,7 +104,7 @@ def get_all_contracts_to_csv(start_date, end_date):
                     'CurrentContractAmount': contract_amount
                 })
 
-    csv_sort = pd.read_csv(report_path)
+    csv_sort = pd.read_csv(report_path, encoding= 'unicode_escape')
     csv_sort.sort_values(by=['OrgGroupCode','OrgGroupCodeDesc','ContractNumber1'], inplace=True)
     csv_sort.to_csv(report_path, index=False)
 
